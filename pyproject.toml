@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "affinity-propagation-visualization"
+version = "0.1.0"
+description = ""
+authors = ["Dohyun Park <dohyun1357@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.7,<3.11"
+streamlit = "^1.3.0"
+numpy = "^1.21.5"
+matplotlib = "^3.5.1"
+sklearn = "^0.0"
+stqdm = "^0.0.4"
+
+[tool.poetry.dev-dependencies]
+black = "^21.12b0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
