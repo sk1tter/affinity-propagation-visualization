@@ -20,13 +20,21 @@ def compute_responsibility(
     """
     new_R = R.copy()
     n = S.shape[0]
-    for i in range(n):
-        for k in range(n):
-            AS = A[i, :] + S[i, :]
-            AS[k] = -np.inf
-            new_R[i, k] = S[i, k] - np.max(AS)
 
-    new_R = (1 - damping_factor) * new_R + damping_factor * R
+    AS = S + A
+    rows = np.arange(n)
+    np.fill_diagonal(AS, -np.inf)
+
+    idx_max = np.argmax(AS, axis=1)
+    first_max = AS[rows, idx_max]
+
+    AS[rows, idx_max] = -np.inf
+    second_max = AS[rows, np.argmax(AS, axis=1)]
+
+    max_matrix = np.zeros_like(R) + first_max[:, None]
+    max_matrix[rows, idx_max] = second_max
+
+    new_R = R * damping_factor + (1 - damping_factor) * (S - max_matrix)
     return new_R
 
 
@@ -42,17 +50,27 @@ def compute_availability(
     Returns matrix containing the new availabilities.
     """
     n = R.shape[0]
-    new_A = np.array(A)
+    k_idx = np.arange(n)
+    a = np.array(R)
+    a[a < 0] = 0
+    np.fill_diagonal(a, 0)
+    a = a.sum(axis=0)
+    a = a + R[k_idx, k_idx]
 
-    for i in range(n):
-        for k in range(n):
-            r = np.array(R[:, k])
-            r[[i, k]] = 0
-            if i != k:
-                new_A[i, k] = np.minimum(0, R[k, k] + np.sum(r[r > 0]))
-            else:
-                new_A[i, k] = np.sum(r[r > 0])
-    new_A = (1 - damping_factor) * new_A + damping_factor * A
+    a = np.ones(A.shape) * a
+
+    a -= np.clip(R, 0, np.inf)
+    a[a > 0] = 0
+
+    a_ = np.array(R)
+    np.fill_diagonal(a_, 0)
+
+    a_[a_ < 0] = 0
+
+    a[k_idx, k_idx] = a_.sum(axis=0)
+
+    new_A = A * damping_factor + (1 - damping_factor) * a
+
     return new_A
 
 
