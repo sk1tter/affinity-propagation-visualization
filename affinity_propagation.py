@@ -18,7 +18,6 @@ def compute_responsibility(
                 for the weighted sum of the old and new responsibilities.
     Returns matrix containing the new responsibilities.
     """
-    new_R = R.copy()
     n = S.shape[0]
 
     AS = S + A
