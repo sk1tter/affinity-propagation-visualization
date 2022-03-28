@@ -41,7 +41,6 @@ def compute_availability(
     R: np.ndarray, A: np.ndarray, damping_factor: float = 0.5
 ) -> np.ndarray:
     """
-    S: n by n matrix of similarities
     R: n by n matrix of current responsibilities
     A: n by n matrix of current availabilities
     damping_factor: Damping factor used to calculate new availabilities. Acts as weight
